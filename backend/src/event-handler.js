@@ -6,63 +6,70 @@ class EventHandler {
   }
 
   async getNodeId({ nexaId }) {
-    const [nodes] = await this.database.query(
-      'SELECT id FROM nodes WHERE nexaId = ?',
-      nexaId,
-    );
+    const node = await this.database.models.Nodes.findOne({
+      where: {
+        nexaId,
+      },
+    });
 
-    if (nodes.length === 0) {
+    if (node === null) {
       return false;
     }
 
-    const [{ id }] = nodes;
+    const { id } = node;
 
     return id;
   }
 
   async getSensorId({ sensorName }) {
-    const [sensors] = await this.database.query(
-      'SELECT id FROM sensors WHERE name = ?',
-      sensorName,
-    );
+    const sensor = await this.database.models.Sensors.findOne({
+      where: {
+        name: sensorName,
+      },
+    });
 
-    if (sensors.length === 0) {
+    if (sensor === null) {
       return false;
     }
 
-    const [{ id }] = sensors;
+    const { id } = sensor;
 
     return id;
   }
 
-  async handleEvent({ nexaId, sensorName, timestamp }) {
-    const nodeId = this.getNodeId({ nexaId });
-    const sensorId = this.getSensorId({ sensorName });
+  async onEvent({
+    nexaId,
+    sensorName,
+    timestamp,
+    value,
+  }) {
+    const [nodeId, sensorId] = await Promise.all([
+      this.getNodeId({ nexaId }),
+      this.getSensorId({ sensorName }),
+    ]);
 
     if (nodeId && sensorId) {
       this.saveEvent({
         nodeId,
         sensorId,
         timestamp,
+        value,
       });
     }
-
-    return true;
   }
 
-  async onEvent(event) {
-    if (event) {
-      this.handleEvent(event);
-    }
-  }
-
-  async saveEvent({ nodeId, sensorId, timestamp }) {
-    this.database.query(
-      'INSERT INTO nodes (`node`, `sensor`, `timestamp`) VALUES (?, ?, ?)',
-      nodeId,
-      sensorId,
+  async saveEvent({
+    nodeId,
+    sensorId,
+    timestamp,
+    value,
+  }) {
+    this.database.models.Measurements.create({
+      node: nodeId,
+      sensor: sensorId,
       timestamp,
-    );
+      value,
+    });
   }
 }
 

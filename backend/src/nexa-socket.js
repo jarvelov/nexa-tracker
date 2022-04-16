@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import WebSocket from 'ws';
+import moment from 'moment';
 
 const NEXA_JSON_MESSAGE_START_CHARACTER = '{';
 
@@ -18,10 +19,9 @@ class NexaSocket extends EventEmitter {
       });
 
       this.websocket.on('open', () => {
-        this.websocket.on('close', this.onClose);
-        this.websocket.on('message', this.onMessage);
+        this.websocket.on('message', this.onMessage.bind(this));
 
-        resolve();
+        resolve(null);
       });
     });
   }
@@ -31,7 +31,7 @@ class NexaSocket extends EventEmitter {
     const parsedData = this.parseData(data);
 
     if (parsedData) {
-      const event = this.formatToEvent(data);
+      const event = this.formatToEvent(parsedData);
 
       this.eventHandler.onEvent(event);
     }
@@ -58,10 +58,12 @@ class NexaSocket extends EventEmitter {
   formatToEvent(data) {
     const {
       sourceNode: nexaId,
-      time: timestamp,
       name: sensorName,
+      time,
       value,
     } = data;
+
+    const timestamp = moment.utc(time).toISOString();
 
     return {
       nexaId,

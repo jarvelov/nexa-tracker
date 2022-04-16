@@ -1,20 +1,38 @@
 services:
   db:
-    image: mysql:5.7
+    image: postgres:14
     restart: always
     env_file:
       - .env_db
     ports:
-      - '3306:3306'
+      - '5432:5432'
     expose:
-      - '3306'
+      - '5432'
     volumes:
-      - nexa-tracker:/var/lib/mysql
+      - nexa-tracker:/var/lib/postgresql/data
+      # - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
   backend:
       image: node:lts-stretch-slim
       restart: always
       env_file:
         - .env_db
         - .env_backend
+      volumes:
+        - ./backend:/app/backend
+      working_dir: /app/backend
+      command: bash -c "sleep 1 && npm run start"
+  frontend:
+    image: node:lts-stretch-slim
+    restart: always
+    env_file:
+      - .env_db
+      - .env_frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app/frontend
+    working_dir: /app/frontend
+    command: npm run dev
+
 volumes:
   nexa-tracker:
