@@ -1,29 +1,32 @@
-import EventEmitter from 'events';
 import WebSocket from 'ws';
 import moment from 'moment';
+import mockEvents from './mock-events.js';
 
 const NEXA_JSON_MESSAGE_START_CHARACTER = '{';
 
-class NexaSocket extends EventEmitter {
+class NexaSocket {
   constructor({ eventHandler }) {
-    super();
-
     this.eventHandler = eventHandler;
   }
 
   async connect({ host, port }, settings) {
-    return new Promise((resolve) => {
-      this.websocket = new WebSocket(`ws://${host}:${port}`, {
-        perMessageDeflate: false,
-        ...settings,
-      });
+    mockEvents((line) => {
+      this.onMessage(Buffer.from(line));
+    }, 10);
 
-      this.websocket.on('open', () => {
-        this.websocket.on('message', this.onMessage.bind(this));
-
-        resolve(null);
-      });
-    });
+    // return new Promise((resolve) => {
+    //   this.websocket = new WebSocket(`ws://${host}:${port}`, {
+    //     perMessageDeflate: false,
+    //     ...settings,
+    //   });
+    //
+    //   this.websocket.on('open', () => {
+    //     this.websocket.on('message', this.onMessage.bind(this));
+    //
+    //     resolve(null);
+    //   });
+    // });
+    //
   }
 
   onMessage(payload) {

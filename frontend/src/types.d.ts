@@ -1,7 +1,7 @@
-export type Measurements = {
-  id: number;
-  node: number;
-  sensor: number;
+export type Measurement = {
+  id: string;
+  node: string;
+  sensor: string;
   timestamp: string | Date;
   value: number;
   createdAt: string | Date;

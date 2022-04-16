@@ -16,10 +16,10 @@ class Models {
   }
 
   async init() {
-    await this.Nodes.sync({ force: true });
-    await this.Sensors.sync({ force: true });
-    await this.Trackers.sync({ force: true });
-    await this.Measurements.sync({ force: true });
+    await this.Nodes.sync();
+    await this.Sensors.sync();
+    await this.Trackers.sync();
+    await this.Measurements.sync();
   }
 }
 
