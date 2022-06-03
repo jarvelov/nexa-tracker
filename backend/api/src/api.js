@@ -1,12 +1,9 @@
 import cors from 'cors';
 import express from 'express';
-import measurements from './measurements.js';
+import Endpoints from './endpoints/index.js';
 
 class Api {
-  constructor({
-    database,
-    port,
-  }) {
+  constructor({ database, port }) {
     this.database = database;
     this.port = port;
 
@@ -14,9 +11,10 @@ class Api {
     this.app.use(express.json());
     this.app.use(cors());
 
-    this.app.post('/api/measurements', measurements({
+    this.endpoints = new Endpoints({
+      app: this.app,
       database: this.database,
-    }));
+    });
   }
 
   start() {

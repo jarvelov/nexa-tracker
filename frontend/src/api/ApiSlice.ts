@@ -1,10 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { MeasurementsResponse, MeasurementsRequest } from './types'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { MeasurementsResponse, MeasurementsRequest } from './types';
 
 const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8080/api'
+    baseUrl: 'http://localhost:9008/api',
   }),
   endpoints: (builder) => ({
     getMeasurements: builder.query<MeasurementsResponse, MeasurementsRequest>({
@@ -17,7 +17,7 @@ const apiSlice = createApi({
       },
     }),
   }),
-})
+});
 
 export const { useGetMeasurementsQuery } = apiSlice;
 

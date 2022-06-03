@@ -1,5 +1,4 @@
-import Api from './api/index.js';
-import Database from './database/index.js';
+import Database from '@nexa-tracker/database';
 import EventHandler from './event-handler.js';
 import NexaSocket from './nexa-socket.js';
 
@@ -10,7 +9,6 @@ const {
   POSTGRES_PASSWORD,
   NEXA_SOCKET_HOST,
   NEXA_SOCKET_PORT,
-  API_SERVER_PORT,
 } = process.env;
 
 class Server {
@@ -29,11 +27,6 @@ class Server {
     this.socket = new NexaSocket({
       eventHandler: this.eventHandler,
     });
-
-    this.api = new Api({
-      database: this.database,
-      port: API_SERVER_PORT,
-    });
   }
 
   async start() {
@@ -43,8 +36,6 @@ class Server {
       host: NEXA_SOCKET_HOST,
       port: NEXA_SOCKET_PORT,
     });
-
-    await this.api.start();
   }
 }
 

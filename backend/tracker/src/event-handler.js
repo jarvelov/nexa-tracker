@@ -1,7 +1,5 @@
 class EventHandler {
-  constructor({
-    database,
-  }) {
+  constructor({ database }) {
     this.database = database;
   }
 
@@ -37,15 +35,14 @@ class EventHandler {
     return id;
   }
 
-  async onEvent({
-    nexaId,
-    sensorName,
-    timestamp,
-    value,
-  }) {
+  async onEvent({ nexaId, sensorName, timestamp, value }) {
     const [nodeId, sensorId] = await Promise.all([
-      this.getNodeId({ nexaId }),
-      this.getSensorId({ sensorName }),
+      this.getNodeId({
+        nexaId,
+      }),
+      this.getSensorId({
+        sensorName,
+      }),
     ]);
 
     if (nodeId && sensorId) {
@@ -58,12 +55,7 @@ class EventHandler {
     }
   }
 
-  async saveEvent({
-    nodeId,
-    sensorId,
-    timestamp,
-    value,
-  }) {
+  async saveEvent({ nodeId, sensorId, timestamp, value }) {
     this.database.models.Measurements.create({
       node: nodeId,
       sensor: sensorId,

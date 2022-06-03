@@ -1,3 +1,47 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:@typescript-eslint/recommended",
+    "next/core-web-vitals"
+  ],
+  "env": {
+    "browser": true
+  },
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "indent": "off",
+    "@typescript-eslint/indent": ["error", 2],
+    "import/extensions": ["error", "never"],
+    "react/function-component-definition": [
+      "error",
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ],
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".tsx"]
+      }
+    ],
+    "arrow-body-style": "off",
+    "react/jsx-props-no-spreading": "off",
+    "object-curly-newline": [
+      "error",
+      {
+        "ObjectExpression": {
+          "multiline": true,
+          "minProperties": 1
+        },
+        "ObjectPattern": {
+          "multiline": true
+        }
+      }
+    ],
+    "react/require-default-props": "off"
+  }
 }

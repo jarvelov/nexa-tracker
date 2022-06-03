@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:14
+    image: postgres:14-alpine
     restart: always
     env_file:
       - .env_db
@@ -10,23 +10,50 @@ services:
       - '5432'
     volumes:
       - nexa-tracker:/var/lib/postgresql/data
-  backend:
-      image: node:lts-stretch-slim
-      restart: always
-      env_file:
-        - .env_db
-        - .env_backend
-      volumes:
-        - ./backend:/app/backend
-      working_dir: /app/backend
-      command: bash -c "sleep 1 && npm run start"
-      ports:
-        - '8080:8080'
-  frontend:
-    image: node:lts-stretch-slim
+    networks:
+      - default
+  nginx:
+    image: nginx:1.22-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  api:
+    image: node:18-alpine
+    restart: always
+    env_file:
+      - .env_api
+      - .env_db
+    volumes:
+      - ./backend/api:/app/api
+      - ./backend/database:/app/database
+    working_dir: /app/api
+    command: bash -c "sleep 1 && npm run start"
+    ports:
+      - '8080:8080'
+    networks:
+      - default
+
+  tracker:
+    image: node:18-alpine
     restart: always
     env_file:
       - .env_db
+      - .env_tracker
+    volumes:
+      - ./backend/database:/app/database
+      - ./backend/tracker:/app/tracker
+    working_dir: /app/tracker
+    command: bash -c "sleep 1 && npm run start"
+    networks:
+      - default
+
+  frontend:
+    image: node:18-alpine
+    restart: always
+    env_file:
       - .env_frontend
     ports:
       - '3000:3000'
@@ -34,6 +61,7 @@ services:
       - ./frontend:/app/frontend
     working_dir: /app/frontend
     command: npm run dev
-
+    networks:
+      - default
 volumes:
   nexa-tracker:
