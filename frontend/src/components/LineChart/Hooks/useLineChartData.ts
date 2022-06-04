@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import useSensorsNames from './useSensorsNames';
+import moment from 'moment';
+import useSensorsSelected from './useSensorsSelected';
 import { useGetMeasurements } from '../Queries';
 
 export type Data = Array<{
@@ -8,22 +9,22 @@ export type Data = Array<{
 
 const useLineChartData = () => {
   const { data } = useGetMeasurements();
-  const sensorsNames = useSensorsNames();
+  const sensorsSelected = useSensorsSelected();
 
   const lineChartData = useMemo(() => {
     if (data && data.status === 'success') {
       const { results } = data;
 
       return results.reduce((chartData, { createdAt, sensor, value }) => {
-        const sensorName = sensorsNames.find(({ id }) => id === sensor);
+        const matchedSensor = sensorsSelected.find(({ id }) => id === sensor);
 
-        if (sensorName) {
-          const { name } = sensorName;
+        if (matchedSensor) {
+          const { name } = matchedSensor;
 
           return [
             ...chartData,
             {
-              name: new Date(createdAt).valueOf(),
+              name: moment(createdAt).format('YYYY-MM-DD HH:MM:SS'),
               [name]: value,
             },
           ];
@@ -34,7 +35,7 @@ const useLineChartData = () => {
     }
 
     return [];
-  }, [data]);
+  }, [data, sensorsSelected]);
 
   return lineChartData;
 };

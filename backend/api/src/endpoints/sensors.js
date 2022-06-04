@@ -1,25 +1,23 @@
 import { Op } from 'sequelize';
-import moment from 'moment';
 
 const measurements = ({ database }) => {
   const endpoint = async (req, res) => {
-    const { dateFrom, dateTo, sensors, nodes } = req.body;
+    const { sensors } = req.body;
 
     try {
-      const results = await database.models.Measurements.findAll({
-        where: {
-          createdAt: {
-            [Op.gte]: moment.utc(dateFrom).toDate(),
-            [Op.lte]: moment.utc(dateTo).toDate(),
+      let results;
+
+      if (sensors) {
+        results = await database.models.Sensors.findAll({
+          where: {
+            sensor: {
+              [Op.in]: sensors,
+            },
           },
-          sensor: {
-            [Op.in]: sensors,
-          },
-          node: {
-            [Op.in]: nodes,
-          },
-        },
-      });
+        });
+      } else {
+        results = await database.models.Sensors.findAll();
+      }
 
       res.status(200);
 

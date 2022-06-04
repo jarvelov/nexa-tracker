@@ -1,15 +1,15 @@
 import { Tooltip, XAxis, LineChart as RechartsLineChart, Line } from 'recharts';
-import { useFormatter, useLineChartData, useSensorsNames } from './Hooks';
+import { useFormatter, useLineChartData, useSensorsSelected } from './Hooks';
 
 const LineChart = () => {
   const data = useLineChartData();
   const formatter = useFormatter();
-  const sensorsNames = useSensorsNames();
+  const sensorsSelected = useSensorsSelected();
 
   return (
     <RechartsLineChart width={400} height={400} data={data}>
-      {sensorsNames.map(({ color, id, name }) => (
-        <Line key={id} dataKey={name} stroke={color} />
+      {sensorsSelected.map(({ id, name }) => (
+        <Line key={id} dataKey={name} />
       ))}
       <XAxis tickCount={0} dataKey="name" tickFormatter={formatter} />
       <Tooltip />

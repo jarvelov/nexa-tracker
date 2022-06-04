@@ -6,4 +6,15 @@ export type Measurement = {
   value: number;
   createdAt: string | Date;
   updatedAt: string | Date;
-}
+};
+
+export type Sensor = {
+  id: string;
+  name: string;
+};
+
+export type Node = {
+  id: string;
+  name: string;
+  nexaId: number;
+};
