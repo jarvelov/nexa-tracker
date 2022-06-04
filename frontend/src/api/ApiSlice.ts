@@ -8,8 +8,6 @@ const path = process.env.NEXT_PUBLIC_API_SERVER_PATH;
 
 const baseUrl = `${protocol}://${hostname}:${port}${path}`;
 
-console.log('baseUrl', baseUrl);
-
 const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
