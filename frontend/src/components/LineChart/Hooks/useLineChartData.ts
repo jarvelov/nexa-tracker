@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import moment from 'moment';
+import useNodesSelected from './useNodesSelected';
 import useSensorsSelected from './useSensorsSelected';
 import { useGetMeasurements } from '../Queries';
 
@@ -7,35 +8,45 @@ export type Data = Array<{
   [key: string]: string | number;
 }>;
 
+export type ChartData = Data;
+
 const useLineChartData = () => {
   const { data } = useGetMeasurements();
   const sensorsSelected = useSensorsSelected();
+  const nodesSelected = useNodesSelected();
 
   const lineChartData = useMemo(() => {
     if (data && data.status === 'success') {
-      const { results } = data;
+      const { results: measurements } = data;
 
-      return results.reduce((chartData, { createdAt, sensor, value }) => {
-        const matchedSensor = sensorsSelected.find(({ id }) => id === sensor);
+      return measurements.reduce(
+        (nodeChartData, { createdAt, sensor, node, value }) => {
+          const matchedNode = nodesSelected.find(({ id }) => id === node);
+          const matchedSensor = sensorsSelected.find(({ id }) => id === sensor);
 
-        if (matchedSensor) {
-          const { name } = matchedSensor;
+          if (matchedSensor && matchedNode) {
+            const { name: sensorName } = matchedSensor;
+            const { id: nodeId, name: nodeName } = matchedNode;
 
-          return [
-            ...chartData,
-            {
-              name: moment(createdAt).format('YYYY-MM-DD HH:MM:SS'),
-              [name]: value,
-            },
-          ];
-        }
+            return [
+              ...nodeChartData,
+              {
+                name: moment(createdAt).format('YYYY-MM-DD HH:MM:ss'),
+                time: moment(createdAt).toDate().getTime(),
+                value,
+                [nodeName]: value,
+              },
+            ];
+          }
 
-        return chartData;
-      }, [] as Data);
+          return nodeChartData;
+        },
+        [] as Data,
+      );
     }
 
     return [];
-  }, [data, sensorsSelected]);
+  }, [data, nodesSelected, sensorsSelected]);
 
   return lineChartData;
 };

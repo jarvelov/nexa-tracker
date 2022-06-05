@@ -1,17 +1,29 @@
-import { Tooltip, XAxis, LineChart as RechartsLineChart, Line } from 'recharts';
-import { useFormatter, useLineChartData, useSensorsSelected } from './Hooks';
+import {
+  Tooltip,
+  XAxis,
+  YAxis,
+  LineChart as RechartsLineChart,
+  Line,
+  ResponsiveContainer,
+  CartesianGrid,
+} from 'recharts';
+import { useFormatter, useLineChartData, useNodesSelected } from './Hooks';
+
+const colors = ['#1d1d1d', '#21A101', '#0192aa'];
 
 const LineChart = () => {
   const data = useLineChartData();
   const formatter = useFormatter();
-  const sensorsSelected = useSensorsSelected();
+  const nodesSelected = useNodesSelected();
 
   return (
-    <RechartsLineChart width={400} height={400} data={data}>
-      {sensorsSelected.map(({ id, name }) => (
-        <Line key={id} dataKey={name} />
+    <RechartsLineChart width={800} height={400} data={data}>
+      {nodesSelected.map(({ id, name }, index) => (
+        <Line connectNulls key={id} dataKey={name} stroke={colors[index]} />
       ))}
+      <CartesianGrid strokeDasharray="3 3" />
       <XAxis tickCount={0} dataKey="name" tickFormatter={formatter} />
+      <YAxis />
       <Tooltip />
     </RechartsLineChart>
   );
