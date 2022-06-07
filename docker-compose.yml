@@ -10,7 +10,7 @@ services:
       - '5432'
     volumes:
       - ./backend/database/init:/docker-entrypoint-initdb.d
-      - nexa-tracker:/var/lib/postgresql/data
+      - nexa-tracker-database:/var/lib/postgresql/data
     networks:
       - default
 
@@ -63,10 +63,12 @@ services:
       - '3000:3000'
     volumes:
       - ./frontend:/app/frontend
+      - nexa-tracker-node-modules:/app/frontend/node_modules
       - ./.env_frontend:/app/frontend/.env
     working_dir: /app/frontend
     command: npm run dev
     networks:
       - default
 volumes:
-  nexa-tracker:
+  nexa-tracker-database:
+  nexa-tracker-node-modules:
