@@ -3,8 +3,7 @@ import LineChart from '../components/LineChart';
 import ConditionallyRender from '../components/ConditionallyRender';
 import SensorsSelect from '../components/SensorsSelect';
 import NodesSelect from '../components/NodesSelect';
-import DateFrom from '../components/DateFrom';
-import DateTo from '../components/DateTo';
+import DateRange from '../components/DateRange';
 
 const Home: NextPage = () => {
   return (
@@ -12,8 +11,7 @@ const Home: NextPage = () => {
       <h1>Nexa Tracker</h1>
       <SensorsSelect />
       <NodesSelect />
-      <DateFrom />
-      <DateTo />
+      <DateRange />
       <ConditionallyRender client>
         <LineChart />
       </ConditionallyRender>

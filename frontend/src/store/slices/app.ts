@@ -10,15 +10,16 @@ export type AppState = {
   dateTo: string;
 };
 
+const today = moment().startOf('day');
+const yesterday = moment(today).subtract(1, 'day');
+
 const initialState: AppState = {
   menuOpen: false,
   sensorsSelected: [],
   nodesSelected: [],
-  dateFrom: moment().subtract(1, 'day').startOf('day').toISOString(),
-  dateTo: moment().startOf('day').toISOString(),
+  dateFrom: today.toISOString(),
+  dateTo: yesterday.toISOString(),
 };
-
-console.log(initialState);
 
 const appSlice = createSlice({
   name: 'app',

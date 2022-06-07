@@ -4,15 +4,21 @@ import trackers from './trackers.js';
 import measurements from './measurements.js';
 
 class Models {
-  constructor({
-    sequelize,
-  }) {
+  constructor({ sequelize }) {
     this.sequelize = sequelize;
 
-    this.Nodes = nodes({ sequelize: this.sequelize });
-    this.Sensors = sensors({ sequelize: this.sequelize });
-    this.Trackers = trackers({ sequelize: this.sequelize });
-    this.Measurements = measurements({ sequelize: this.sequelize });
+    this.Nodes = nodes({
+      sequelize: this.sequelize,
+    });
+    this.Sensors = sensors({
+      sequelize: this.sequelize,
+    });
+    this.Trackers = trackers({
+      sequelize: this.sequelize,
+    });
+    this.Measurements = measurements({
+      sequelize: this.sequelize,
+    });
   }
 
   async init() {

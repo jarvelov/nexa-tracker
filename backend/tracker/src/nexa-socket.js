@@ -25,6 +25,7 @@ class NexaSocket {
 
   onMessage(payload) {
     const data = Buffer.from(payload).toString();
+    console.log('rawData', data);
     const parsedData = this.parseData(data);
 
     if (parsedData) {
