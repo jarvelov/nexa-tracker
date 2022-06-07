@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npm run install && npm run serve",
+    "serve": "next start",
     "lint": "next lint"
   },
   "resolutions": {
