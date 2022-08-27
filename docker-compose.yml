@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:14-alpine
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env_db
     ports:
@@ -24,7 +24,7 @@ services:
 
   api:
     image: node:18-alpine
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env_api
       - .env_db
@@ -42,7 +42,7 @@ services:
 
   tracker:
     image: node:18-alpine
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env_db
       - .env_tracker
@@ -58,17 +58,17 @@ services:
 
   frontend:
     image: node:18-alpine
-    restart: always
+    restart: unless-stopped
     ports:
       - '3000:3000'
     volumes:
       - ./frontend:/app/frontend
-      - nexa-tracker-node-modules:/app/frontend/node_modules
+      - ./frontend/node_modules:/app/frontend/node_modules
       - ./.env_frontend:/app/frontend/.env
     working_dir: /app/frontend
     command: npm run dev
     networks:
       - default
+
 volumes:
   nexa-tracker-database:
-  nexa-tracker-node-modules:
